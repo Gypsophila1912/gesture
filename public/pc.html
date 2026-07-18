@@ -24,7 +24,7 @@
       height: 100%;
     }
     .camera-container {
-      flex: 8;
+      flex: 7;
       position: relative;
       display: flex;
       justify-content: center;
@@ -48,8 +48,7 @@
       transform: scaleX(-1);
     }
     .sidebar {
-      flex: 2;
-      min-width: 240px;
+      flex: 3;
       background-color: #2a2a2a;
       display: flex;
       flex-direction: column;
@@ -95,15 +94,13 @@
     /* Reference table styles */
     .ref-section { margin-top: 4px; }
     .ref-section h3 { margin: 0 0 6px 0; font-size: 0.85rem; color: #aaa; }
-    .ref-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
-    .ref-table th, .ref-table td { padding: 3px 4px; text-align: center; border: 1px solid #444; }
-    .ref-table th { background: #333; color: #ccc; font-weight: 600; }
+    .ref-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; margin-bottom: 8px; }
+    .ref-table th, .ref-table td { padding: 4px; text-align: center; border: none; }
+    .ref-table th { background: #333; color: #ccc; font-weight: 600; border-radius: 4px; }
     .ref-table td { color: #eee; }
-    .ref-table .highlight { background: rgba(0, 212, 255, 0.15); color: #00d4ff; font-weight: bold; }
-    .ref-special { width: 100%; font-size: 0.72rem; margin-top: 6px; }
-    .ref-special td { padding: 2px 6px; color: #bbb; }
-    .ref-special td:first-child { color: #ffcc00; white-space: nowrap; }
-
+    .ref-special { width: 100%; font-size: 0.75rem; margin-top: 6px; }
+    .ref-special td { padding: 4px 6px; color: #bbb; }
+    .ref-special td:first-child { color: #00d4ff; white-space: nowrap; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -142,29 +139,37 @@
       <!-- 対応表 -->
       <div class="ref-section">
         <h3>📖 行（指の合計本数）</h3>
-        <table class="ref-table">
+        <table class="ref-table" style="margin-bottom: 4px;">
           <tr>
-            <th>指</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th>
+            <th>指</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
           </tr>
           <tr>
-            <th>行</th><td>a</td><td>k</td><td>s</td><td>t</td><td>n</td><td>h</td><td>m</td><td>y</td><td>r</td><td>w</td>
+            <th>行</th><td>あ</td><td>か</td><td>さ</td><td>た</td><td>な</td>
+          </tr>
+        </table>
+        <table class="ref-table">
+          <tr>
+            <th>指</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th>
+          </tr>
+          <tr>
+            <th>行</th><td>は</td><td>ま</td><td>や</td><td>ら</td><td>わ</td>
           </tr>
         </table>
       </div>
 
       <div class="ref-section">
         <h3>📖 段（指の本数）</h3>
-        <table class="ref-table" style="margin-bottom: 5px;">
+        <table class="ref-table">
           <tr>
             <th>指</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
           </tr>
           <tr>
-            <th>通常</th><td>a</td><td>i</td><td>u</td><td>e</td><td>o</td>
+            <th>通常</th><td>あ</td><td>い</td><td>う</td><td>え</td><td>お</td>
           </tr>
         </table>
         
         <h3>📖 や行・わ行（指の本数）</h3>
-        <table class="ref-table" style="margin-bottom: 5px;">
+        <table class="ref-table">
           <tr>
             <th>行：8</th><th>1</th><th>3</th><th>5</th>
           </tr>
