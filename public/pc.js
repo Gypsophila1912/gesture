@@ -302,9 +302,6 @@ function processGestures(results) {
           } else {
             if (currentState === 'ROW') {
               processAction('row', detectedGesture);
-              // Reset so that the same gesture can immediately be used for the column without hiding hand
-              gestureConfirmed = false;
-              holdFrames = 0;
             } else if (currentState === 'COL') {
               processAction('col', detectedGesture);
             }
