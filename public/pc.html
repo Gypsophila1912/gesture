@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ジェスチャー入力 - 出題者</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/shared.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      height: 100vh;
+      font-family: 'Inter', sans-serif;
+      background-color: #1a1a1a;
+      color: #fff;
+    }
+    .layout-container {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+    .camera-container {
+      flex: 7;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #000;
+      overflow: hidden;
+    }
+    #video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+    }
+    #output-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      transform: scaleX(-1);
+    }
+    .sidebar {
+      flex: 3;
+      background-color: #2a2a2a;
+      display: flex;
+      flex-direction: column;
+      padding: 15px;
+      box-sizing: border-box;
+      gap: 10px;
+      overflow-y: auto;
+    }
+    .flash-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.5s ease-out;
+      z-index: 1000;
+    }
+    .flash-overlay.flash-success { background-color: rgba(0, 255, 0, 0.4); opacity: 1; transition: none; }
+    .flash-overlay.flash-error { background-color: rgba(255, 0, 0, 0.4); opacity: 1; transition: none; }
+    .flash-overlay.flash-delete { background-color: rgba(255, 165, 0, 0.4); opacity: 1; transition: none; }
+
+    /* Inline minimal styling for missing shared.css specifics just in case */
+    .connection-status { display: flex; align-items: center; gap: 8px; font-weight: bold; }
+    .connection-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .connection-dot.connected { background-color: #00ff00; box-shadow: 0 0 8px #00ff00; }
+    .connection-dot.disconnected { background-color: #ff0000; box-shadow: 0 0 8px #ff0000; }
+    
+    .state-label { font-size: 1.2rem; font-weight: bold; background: #333; padding: 6px; border-radius: 8px; text-align: center; }
+    .input-display { font-size: 1.6rem; min-height: 2.2rem; background: #111; padding: 10px; border-radius: 8px; word-break: break-all; }
+    .action-log { height: 200px; overflow-y: auto; background: #111; padding: 10px; border-radius: 8px; font-size: 0.9rem; font-family: monospace; }
+    .log-entry { padding: 4px 0; border-bottom: 1px solid #333; }
+    .log-entry:last-child { border-bottom: none; }
+    
+    .finger-count-container { display: flex; justify-content: space-around; align-items: center; background: #333; padding: 10px; border-radius: 8px; }
+    .finger-count { font-size: 3.5rem; font-weight: bold; }
+    .hold-gauge { width: 60px; height: 60px; }
+    .hold-gauge-circle { transition: stroke-dashoffset 0.1s linear; }
+    
+    .loading-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 100; font-size: 1.5rem; }
+
+    /* Reference table styles */
+    .ref-section { margin-top: 4px; }
+    .ref-section h3 { margin: 0 0 6px 0; font-size: 0.85rem; color: #aaa; }
+    .ref-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+    .ref-table th, .ref-table td { padding: 3px 4px; text-align: center; border: 1px solid #444; }
+    .ref-table th { background: #333; color: #ccc; font-weight: 600; }
+    .ref-table td { color: #eee; }
+    .ref-table .highlight { background: rgba(0, 212, 255, 0.15); color: #00d4ff; font-weight: bold; }
+    .ref-special { width: 100%; font-size: 0.72rem; margin-top: 6px; }
+    .ref-special td { padding: 2px 6px; color: #bbb; }
+    .ref-special td:first-child { color: #ffcc00; white-space: nowrap; }
+
+  </style>
+</head>
+<body>
+  <div class="flash-overlay" id="flash-overlay"></div>
+  
+  <div class="layout-container">
+    <div class="camera-container" id="camera-container">
+      <div id="loading-overlay" class="loading-overlay">MediaPipeをロード中...</div>
+      <video id="video" autoplay playsinline></video>
+      <canvas id="output-canvas"></canvas>
+    </div>
+    
+    <div class="sidebar">
+      <div class="connection-status">
+        <span class="connection-dot disconnected" id="conn-dot"></span>
+        <span id="conn-text">未接続</span>
+      </div>
+      
+      <div class="state-label" id="state-label">行入力待ち</div>
+      
+      <div class="finger-count-container">
+        <div class="finger-count" id="finger-count">0</div>
+        <div class="hold-gauge">
+          <svg width="60" height="60" viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="34" fill="none" stroke="#555" stroke-width="6" />
+            <circle class="hold-gauge-circle" id="hold-circle" cx="40" cy="40" r="34" fill="none" stroke="#00d4ff" stroke-width="6" stroke-dasharray="213.6" stroke-dashoffset="213.6" transform="rotate(-90 40 40)" />
+          </svg>
+        </div>
+      </div>
+      
+      <div>
+        <h3 style="margin-top: 0; margin-bottom: 8px;">入力テキスト</h3>
+        <div class="input-display" id="input-display"></div>
+      </div>
+
+      <!-- 対応表 -->
+      <div class="ref-section">
+        <h3>📖 行（指の合計本数）</h3>
+        <table class="ref-table">
+          <tr>
+            <th>指</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th>
+          </tr>
+          <tr>
+            <th>行</th><td>あ</td><td>か</td><td>さ</td><td>た</td><td>な</td><td>は</td><td>ま</td><td>や</td><td>ら</td><td>わ</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="ref-section">
+        <h3>📖 段（指の本数）</h3>
+        <table class="ref-table" style="margin-bottom: 5px;">
+          <tr>
+            <th>指</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
+          </tr>
+          <tr>
+            <th>通常</th><td>あ</td><td>い</td><td>う</td><td>え</td><td>お</td>
+          </tr>
+        </table>
+        
+        <h3>📖 や行・わ行（指の本数）</h3>
+        <table class="ref-table" style="margin-bottom: 5px;">
+          <tr>
+            <th>行：8</th><th>1</th><th>3</th><th>5</th>
+          </tr>
+          <tr>
+            <th>や行</th><td>や</td><td>ゆ</td><td>よ</td>
+          </tr>
+        </table>
+        <table class="ref-table">
+          <tr>
+            <th>行：10</th><th>1</th><th>3</th><th>5</th>
+          </tr>
+          <tr>
+            <th>わ行</th><td>わ</td><td>を</td><td>ん</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="ref-section">
+        <h3>🤛 特殊ジェスチャー</h3>
+        <table class="ref-special">
+          <tr><td>✊ 片手グー</td><td>→ 濁点（゛）</td></tr>
+          <tr><td>✊✊ 両手グー</td><td>→ 半濁点（゜）</td></tr>
+          <tr><td>🤙 片手アロハ</td><td>→ 1文字削除</td></tr>
+          <tr><td>🤙🤙 両手アロハ</td><td>→ 全削除</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./pc.js"></script>
+</body>
+</html>

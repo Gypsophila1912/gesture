@@ -1,0 +1,16 @@
+name = "gesture-input"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+[durable_objects]
+bindings = [
+  { name = "GESTURE_ROOM", class_name = "GestureRoom" }
+]
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["GestureRoom"]

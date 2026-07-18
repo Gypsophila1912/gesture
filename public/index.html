@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ジェスチャーで文字を入力し、スマホにリアルタイム表示するツール">
+  <title>ジェスチャー文字入力</title>
+  <link rel="stylesheet" href="/shared.css">
+</head>
+<body>
+  <div class="landing-container">
+    <h1 class="landing-title gradient-text">✋ ジェスチャー入力</h1>
+    <p class="landing-subtitle">手のジェスチャーでひらがなを入力し、スマホにリアルタイム表示</p>
+
+    <div class="landing-cards">
+      <!-- PC (出題者) -->
+      <a href="/pc.html" class="glass-card landing-card card-pc" id="card-pc">
+        <div class="landing-card-icon">🖥️</div>
+        <div class="landing-card-title">出題者（PC）</div>
+        <div class="landing-card-desc">
+          カメラでジェスチャーを認識し<br>ひらがなを入力します
+        </div>
+      </a>
+
+      <!-- スマホ (回答者) -->
+      <a href="/mobile.html" class="glass-card landing-card card-mobile" id="card-mobile">
+        <div class="landing-card-icon">📱</div>
+        <div class="landing-card-title">回答者（スマホ）</div>
+        <div class="landing-card-desc">
+          入力された文字が<br>リアルタイムに表示されます
+        </div>
+      </a>
+    </div>
+
+    <!-- 操作ガイド -->
+    <table class="reference-table" style="margin-top: 48px;">
+      <caption>📖 入力方法：行（指の合計本数）→ 段（指の本数）</caption>
+      <thead>
+        <tr>
+          <th>指の本数</th>
+          <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
+          <th>6</th><th>7</th><th>8</th><th>9</th><th>10</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>行</th>
+          <td>あ</td><td>か</td><td>さ</td><td>た</td><td>な</td>
+          <td>は</td><td>ま</td><td>や</td><td>ら</td><td>わ</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table class="reference-table" style="margin-top: 16px;">
+      <thead>
+        <tr>
+          <th>指の本数</th>
+          <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>段</th>
+          <td>あ</td><td>い</td><td>う</td><td>え</td><td>お</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table class="reference-table" style="margin-top: 16px;">
+      <caption>🤛 特殊ジェスチャー</caption>
+      <thead>
+        <tr>
+          <th>ジェスチャー</th>
+          <th>効果</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>片手グー（0本）</td><td>濁点（゛）</td></tr>
+        <tr><td>両手グー（0+0本）</td><td>半濁点（゜）</td></tr>
+        <tr><td>手を上→下にスワイプ</td><td>1文字削除</td></tr>
+        <tr><td>手を右→左にスワイプ</td><td>全削除</td></tr>
+      </tbody>
+    </table>
+
+    <p style="margin-top: 32px; color: var(--text-muted); font-size: 0.8rem;">
+      例：「く」→ 指2本（か行）＋ 指3本（う段）｜「ぐ」→ 「く」の後にグー（濁点）
+    </p>
+  </div>
+</body>
+</html>

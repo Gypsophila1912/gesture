@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="description" content="ジェスチャー入力 - 回答者用表示">
+  <title>ジェスチャー入力 - 回答者</title>
+  <link rel="stylesheet" href="/shared.css">
+</head>
+<body>
+  <!-- 接続状態 -->
+  <div class="mobile-status">
+    <div class="connection-status" id="connection-status">
+      <div class="connection-dot disconnected" id="connection-dot"></div>
+      <span id="connection-text">接続中...</span>
+    </div>
+  </div>
+
+  <!-- メイン表示エリア -->
+  <div class="mobile-container">
+    <div class="mobile-text" id="display-text"></div>
+  </div>
+
+  <!-- フラッシュオーバーレイ -->
+  <div class="flash-overlay" id="flash-overlay"></div>
+
+  <!-- ラベル -->
+  <div class="mobile-label">ジェスチャー入力 — 回答者画面</div>
+
+  <script type="module" src="/mobile.js"></script>
+</body>
+</html>
