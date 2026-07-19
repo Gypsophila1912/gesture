@@ -2,7 +2,7 @@
 const MEDIAPIPE_VERSION = '0.10.35';
 const WASM_URL = `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${MEDIAPIPE_VERSION}/wasm`;
 const MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task';
-const HOLD_FRAMES_REQUIRED = 9; // ~0.3s at 30fps
+const HOLD_FRAMES_REQUIRED = 6; // ~0.2s at 30fps
 
 // Hiragana Lookup Table (行=row, 段=col)
 const HIRAGANA_TABLE = {
@@ -302,11 +302,15 @@ function processGestures(results) {
           } else {
             if (currentState === 'ROW') {
               processAction('row', detectedGesture);
+              // 行から段への移行時のみ、手を引っ込めずに連続入力可能にする
+              gestureConfirmed = false;
+              holdFrames = 0;
             } else if (currentState === 'COL') {
               processAction('col', detectedGesture);
+              // 1文字確定後は手を引っ込めるまで待機する（連続入力防止）
             }
           }
-          cooldownFrames = 5; // small cooldown after confirm
+          cooldownFrames = 3; // small cooldown after confirm
         }
       } else {
         updateHoldGauge(100); // keep full
